@@ -86,7 +86,7 @@ Base.metadata.create_all()
 
 def populateDB(sess):
     if Person.query.count() > 0:
-        print "Not populating DB.  Already stuff in there."
+        print("Not populating DB.  Already stuff in there.")
         return
 
     firsts = ["Sally", "Suzie", "Sandy",
@@ -126,7 +126,7 @@ def populateDB(sess):
     benalis = Person.query.filter_by(last_name='Ben Ali').all()
     dictators = qaddafis + mubaraks + benalis
 
-    print "populating dictators friends"
+    print("populating dictators friends")
     for p1 in dictators:
         for p2 in dictators:
             if p1 == p2 or p1 in p2.friends:
@@ -135,7 +135,7 @@ def populateDB(sess):
                 p1.friends.append(p2)
                 p2.friends.append(p1)
 
-    print "populating everyone else's friends"
+    print("populating everyone else's friends")
     for p1 in Person.query.all():
         for p2 in Person.query.all():
             if p1 == p2 or p1 in p2.friends:
@@ -144,7 +144,7 @@ def populateDB(sess):
                 p1.friends.append(p2)
                 p2.friends.append(p1)
 
-    print "done populating DB"
+    print("done populating DB")
 
 populateDB(session)
 transaction.commit()

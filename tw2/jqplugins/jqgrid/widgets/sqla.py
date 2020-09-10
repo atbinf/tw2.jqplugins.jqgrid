@@ -18,6 +18,10 @@ import datetime
 import math
 import transaction
 
+from past.builtins import cmp
+from six.moves import reduce
+from six import text_type
+
 COUNT_PREFIX = '__count_'
 
 
@@ -145,9 +149,9 @@ class SQLAjqGridWidget(jqGridWidget):
                 if prop.uselist:
                     data = len(data)
                 else:
-                    data = unicode(data)
+                    data = text_type(data)
             elif is_relation(prop) and not prop.uselist:
-                data = unicode(data)
+                data = text_type(data)
 
             if isinstance(data, (datetime.datetime, datetime.date)):
                 data = data.strftime(cls.datetime_format)
@@ -244,7 +248,7 @@ class SQLAjqGridWidget(jqGridWidget):
 
         subquery_lookup = cls._get_subquery_lookup()
         query_args, subqueries = {}, {}
-        for attribute, l in subquery_lookup.iteritems():
+        for attribute, l in subquery_lookup.items():
             subquery = session.query(
                 dotted_getattr(l['cls'], l['local']),
                 sqlalchemy.sql.func.count('*').label(attribute)
@@ -261,7 +265,7 @@ class SQLAjqGridWidget(jqGridWidget):
 
         query = session.query(cls.entity, *query_args.values())
 
-        for attribute, l in subquery_lookup.iteritems():
+        for attribute, l in subquery_lookup.items():
             query = query.outerjoin((
                 subqueries[attribute],
                 getattr(cls.entity, l['remote']) ==
