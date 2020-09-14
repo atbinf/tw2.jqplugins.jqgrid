@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import tw2.core
 import tw2.core.util
 from tw2.core.resources import encoder
@@ -17,6 +15,12 @@ import json
 import datetime
 import math
 import transaction
+
+from past.builtins import cmp
+from six import text_type
+from six.moves import filter
+from six.moves import map
+from functools import reduce
 
 COUNT_PREFIX = '__count_'
 
@@ -145,9 +149,9 @@ class SQLAjqGridWidget(jqGridWidget):
                 if prop.uselist:
                     data = len(data)
                 else:
-                    data = unicode(data)
+                    data = text_type(data)
             elif is_relation(prop) and not prop.uselist:
-                data = unicode(data)
+                data = text_type(data)
 
             if isinstance(data, (datetime.datetime, datetime.date)):
                 data = data.strftime(cls.datetime_format)
@@ -244,7 +248,7 @@ class SQLAjqGridWidget(jqGridWidget):
 
         subquery_lookup = cls._get_subquery_lookup()
         query_args, subqueries = {}, {}
-        for attribute, l in subquery_lookup.iteritems():
+        for attribute, l in subquery_lookup.items():
             subquery = session.query(
                 dotted_getattr(l['cls'], l['local']),
                 sqlalchemy.sql.func.count('*').label(attribute)
@@ -259,9 +263,9 @@ class SQLAjqGridWidget(jqGridWidget):
             query_args[attribute] = getattr(subquery.c, attribute)
             subqueries[attribute] = subquery
 
-        query = session.query(cls.entity, *query_args.values())
+        query = session.query(cls.entity, *list(query_args.values()))
 
-        for attribute, l in subquery_lookup.iteritems():
+        for attribute, l in subquery_lookup.items():
             query = query.outerjoin((
                 subqueries[attribute],
                 getattr(cls.entity, l['remote']) ==
@@ -408,7 +412,7 @@ class SQLAjqGridWidget(jqGridWidget):
             kw.update(req.params)
 
             # Cast things to integers
-            kw['page'], kw['rows'] = map(int, [kw['page'], kw['rows']])
+            kw['page'], kw['rows'] = list(map(int, [kw['page'], kw['rows']]))
 
             base = cls._build_sorted_query(kw)
 

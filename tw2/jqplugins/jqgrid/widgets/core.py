@@ -6,6 +6,7 @@ import tw2.jquery.base as tw2_jq_c_b
 import tw2.jqplugins.ui.base as tw2_jq_ui
 
 from tw2.jqplugins.jqgrid import base
+from six.moves import map
 
 _pager_defaults = {
     'enableSearch': True,
@@ -58,5 +59,5 @@ class jqGridWidget(tw2_jq_ui.JQueryUIWidget):
         self._prmDel = encoder.encode(self.prmDel)
         self._prmSearch = encoder.encode(self.prmSearch)
         self._prmView = encoder.encode(self.prmView)
-        self._custom_pager_buttons = map(encoder.encode,
-                                         self.custom_pager_buttons)
+        self._custom_pager_buttons = list(map(encoder.encode,
+                                         self.custom_pager_buttons))
