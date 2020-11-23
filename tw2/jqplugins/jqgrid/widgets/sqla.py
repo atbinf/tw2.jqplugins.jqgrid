@@ -16,7 +16,6 @@ import datetime
 import math
 import transaction
 
-from past.builtins import cmp
 from six import text_type
 from six.moves import filter
 from six.moves import map
@@ -123,7 +122,7 @@ class SQLAjqGridWidget(jqGridWidget):
             def relation_sorter(x, y):
                 xname = dotted_getattr(x, 'direction.name', 'a')
                 yname = dotted_getattr(y, 'direction.name', 'a')
-                return -1 * cmp(xname, yname)
+                return (xname < yname) - (xname > yname)  # It's based on old cmp
 
             props.sort(relation_sorter)
 
